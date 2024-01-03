@@ -1,75 +1,63 @@
-# Nuxt 3 Minimal Starter
+# Finance Tracker
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## Introduction
 
-## Setup
+Welcome to Finance Tracker, an intuitive and efficient way to manage your personal finances. Built with Nuxt 3, Nuxt UI, and powered by Supabase, our tracker simplifies budgeting, expense tracking, and financial planning.
 
-Make sure to install the dependencies:
+## Technologies Used
 
-```bash
-# npm
-npm install
+- **Nuxt 3:** For a robust and scalable frontend.
+- **Nuxt UI:** For a sleek and user-friendly interface.
+- **Supabase:** As a backend and database solution.
 
-# pnpm
-pnpm install
+## Features
 
-# yarn
-yarn install
+- **Expense Tracking:** Log and categorize your daily expenses.
+- **Budget Planning:** Set and manage monthly budgets.
+- **Financial Analytics:** Visualize spending habits with charts and graphs.
 
-# bun
-bun install
-```
+## Getting Started
 
-## Development Server
+### Prerequisites
 
-Start the development server on `http://localhost:3000`:
+Ensure you have the following installed:
 
-```bash
-# npm
-npm run dev
+- Node.js (v14 or later)
+- Nuxt 3
 
-# pnpm
-pnpm run dev
+### Installation
 
-# yarn
-yarn dev
+1. Clone the repository:
+   ```
+   git clone [repo-link]
+   ```
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Set up Supabase:
+   - Create a Supabase account and project.
+   - Configure the environment variables for Supabase integration.
 
-# bun
-bun run dev
-```
+## Usage
 
-## Production
+To start using Finance Tracker:
 
-Build the application for production:
+1. Run the Nuxt server:
+   ```
+   npm run dev
+   ```
+2. Navigate to `localhost:3000` in your browser.
+3. Explore the various features like adding expenses, setting budgets, etc.
 
-```bash
-# npm
-npm run build
+## Contributing
 
-# pnpm
-pnpm run build
+Contributions are welcome! Please read our contributing guidelines for more information on how to contribute.
 
-# yarn
-yarn build
+## License
 
-# bun
-bun run build
-```
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-Locally preview production build:
+## Acknowledgements
 
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Special thanks to all contributors and to the open-source libraries that made this project possible.
