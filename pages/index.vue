@@ -2,7 +2,7 @@
   <section class="flex items-center justify-between mb-10">
     <h1 class="text-4xl font-extrabold">Summary</h1>
     <div>
-      <USelectMenu :options="transactionViewOpstions" v-model="selectedView" />
+      <USelectMenu :options="transactionViewOptions" v-model="selectedView" />
     </div>
   </section>
 
@@ -11,37 +11,43 @@
   >
     <Trend
       color="green"
-      title="income"
+      title="Income"
       :amount="4000"
       :last-amount="3000"
       :loading="false"
     />
     <Trend
       color="red"
-      title="income"
+      title="Expense"
       :amount="4000"
-      :last-amount="3000"
+      :last-amount="5000"
       :loading="false"
     />
     <Trend
       color="green"
-      title="income"
+      title="Investments"
       :amount="4000"
       :last-amount="3000"
       :loading="false"
     />
     <Trend
       color="red"
-      title="income"
+      title="Saving"
       :amount="4000"
-      :last-amount="3000"
+      :last-amount="4100"
       :loading="false"
     />
+  </section>
+
+  <section>
+    <Transaction />
+    <Transaction />
+    <Transaction />
+    <Transaction />
   </section>
 </template>
 
 <script setup>
-import { USelectMenu } from "../.nuxt/components";
 import { transactionViewOptions } from "~/constants";
 
 const selectedView = ref(transactionViewOptions[1]);
