@@ -53,7 +53,9 @@
         color="white"
         variant="solid"
         label="Add"
+        @click="isModalOpen = true"
       />
+      <TransactionModal v-model="isModalOpen" />
     </div>
   </section>
 
@@ -80,6 +82,7 @@
 <script setup>
 import { transactionViewOptions } from "~/constants";
 
+const isModalOpen = ref(false);
 const selectedView = ref(transactionViewOptions[1]);
 const transactions = ref([]);
 const supabase = useSupabaseClient();
