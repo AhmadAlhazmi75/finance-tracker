@@ -2,7 +2,7 @@
   <UModal v-model="isModalOpen">
     <UCard>
       <template #header>Add Transaction</template>
-      <UForm :state="state">
+      <UForm :state="state" :schema="schema" ref="form" @submit.prevent="save">
         <UFormGroup
           :required="true"
           label="Transaction type"
@@ -47,6 +47,7 @@
         </UFormGroup>
 
         <UFormGroup
+          v-if="state.type === 'Expense'"
           :required="true"
           label="Category"
           name="Category"
@@ -67,11 +68,52 @@
 
 <script setup>
 import { categories, transactionTypes } from "~/constants";
+import { z } from "zod";
 const props = defineProps({
   modelValue: Boolean,
 });
 
 const emit = defineEmits(["update:modelValue"]);
+
+// this is the global schema for all of the elements of the form
+const defaultSchema = z.object({
+  created_at: z.string(),
+  description: z.string().optional(),
+  amount: z.number().positive("Amount needs to be more than zero"),
+});
+
+//here to specify the type of the transaction
+const incomeSchema = z.object({
+  type: z.literal("Income"),
+});
+
+// this means that the category is required when the type is Expense
+const expenseSchema = z.object({
+  type: z.literal("Expense"),
+  category: z.enum(categories),
+});
+const investmentSchema = z.object({
+  type: z.literal("Investment"),
+});
+const savingSchema = z.object({
+  type: z.literal("Saving"),
+});
+
+const schema = z.intersection(
+  z.discrimintedUnion("type", [
+    incomeSchema,
+    expenseSchema,
+    investmentSchema,
+    savingSchema,
+  ]),
+  defaultSchema
+);
+
+const form = ref();
+
+const save = async () => {
+  form.value.validate();
+};
 
 const state = ref({
   type: undefined,
