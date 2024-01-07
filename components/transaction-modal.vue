@@ -60,7 +60,13 @@
           />
         </UFormGroup>
 
-        <UButton type="submit" color="black" variant="solid" label="Save" />
+        <UButton
+          :loading="isLoading"
+          type="submit"
+          color="black"
+          variant="solid"
+          label="Save"
+        />
       </UForm>
     </UCard>
   </UModal>
@@ -73,7 +79,7 @@ const props = defineProps({
   modelValue: Boolean,
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "saved"]);
 
 // this is the global schema for all of the elements of the form
 const defaultSchema = z.object({
@@ -92,15 +98,17 @@ const expenseSchema = z.object({
   type: z.literal("Expense"),
   category: z.enum(categories),
 });
+
 const investmentSchema = z.object({
   type: z.literal("Investment"),
 });
+
 const savingSchema = z.object({
   type: z.literal("Saving"),
 });
 
 const schema = z.intersection(
-  z.discrimintedUnion("type", [
+  z.discriminatedUnion("type", [
     incomeSchema,
     expenseSchema,
     investmentSchema,
@@ -110,21 +118,63 @@ const schema = z.intersection(
 );
 
 const form = ref();
+const isLoading = ref(false);
+const supabase = useSupabaseClient();
+const toast = useToast();
 
 const save = async () => {
-  form.value.validate();
+  if (form?.value?.errors?.length) return;
+
+  //save using upsert and using try catch
+  isLoading.value = true;
+  try {
+    const { error } = await supabase
+      .from("transactions")
+      .upsert({ ...state.value });
+
+    if (!error) {
+      toast.add({
+        title: "Transaction saved",
+        icon: "i-heroicons-check-circle",
+      });
+
+      isModalOpen.value = false;
+      emit("saved");
+      return;
+    }
+    throw error
+  } catch (e) {
+    toast.add({
+      title: "Error saving transaction",
+      description: e.message,
+      icon: "i-heroicons-exclamation-circle",
+      color: "red",
+    });
+  } finally {
+    isLoading.value = false;
+  }
 };
 
-const state = ref({
+const initialState = {
   type: undefined,
   amount: 0,
   created_at: undefined,
   description: undefined,
   category: undefined,
-});
+};
+const state = ref({ ...initialState });
+
+const resetForm = () => {
+ Object.assign(state.value, initialState);
+ form.value.$el.querySelectorAll('input').forEach((input) => input.value = '');
+};
 
 const isModalOpen = computed({
   get: () => props.modelValue,
-  set: (value) => emit("update:modelValue", value),
+  set: (value) => {
+    if (!value) resetForm();
+
+    emit("update:modelValue", value);
+  },
 });
 </script>

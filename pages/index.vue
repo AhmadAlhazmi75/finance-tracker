@@ -55,13 +55,13 @@
         label="Add"
         @click="isModalOpen = true"
       />
-      <TransactionModal v-model="isModalOpen" />
+      <TransactionModal v-model="isModalOpen" @saved="refreshTransactions()" />
     </div>
   </section>
 
   <section v-if="!isLoading">
     <div
-      v-for="(transactionsOnDay, date) in transactionsGroupedByDate"
+      v-for="(transactionsOnDay, date) in sortedTransactionsGroupedByDate"
       :key="date"
       class="mb-10"
     >
@@ -164,5 +164,17 @@ const transactionsGroupedByDate = computed(() => {
   }
 
   return grouped;
+});
+
+// Sorting transactionsGroupedByDate by date
+const sortedTransactionsGroupedByDate = computed(() => {
+  const sorted = {};
+  const keys = Object.keys(transactionsGroupedByDate.value).sort((a, b) => {
+    return new Date(b) - new Date(a);
+  });
+  for (const key of keys) {
+    sorted[key] = transactionsGroupedByDate.value[key];
+  }
+  return sorted;
 });
 </script>
