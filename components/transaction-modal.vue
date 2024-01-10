@@ -120,7 +120,7 @@ const schema = z.intersection(
 const form = ref();
 const isLoading = ref(false);
 const supabase = useSupabaseClient();
-const toast = useToast();
+const { toastError, toastSuccess } = useAppToast();
 
 const save = async () => {
   if (form?.value?.errors?.length) return;
@@ -133,22 +133,17 @@ const save = async () => {
       .upsert({ ...state.value });
 
     if (!error) {
-      toast.add({
-        title: "Transaction saved",
-        icon: "i-heroicons-check-circle",
-      });
+      toastSuccess({ title: "Transaction saved" });
 
       isModalOpen.value = false;
       emit("saved");
       return;
     }
-    throw error
+    throw error;
   } catch (e) {
-    toast.add({
-      title: "Error saving transaction",
+    toastError({
+      title: "Transaction not saved",
       description: e.message,
-      icon: "i-heroicons-exclamation-circle",
-      color: "red",
     });
   } finally {
     isLoading.value = false;
@@ -165,8 +160,10 @@ const initialState = {
 const state = ref({ ...initialState });
 
 const resetForm = () => {
- Object.assign(state.value, initialState);
- form.value.$el.querySelectorAll('input').forEach((input) => input.value = '');
+  Object.assign(state.value, initialState);
+  form.value.$el
+    .querySelectorAll("input")
+    .forEach((input) => (input.value = ""));
 };
 
 const isModalOpen = computed({

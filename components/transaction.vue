@@ -52,7 +52,7 @@ const iconColor = computed(() => {
 const { currency } = useCurrency(props.transaction.amount);
 
 const isLoading = ref(false);
-const toast = useToast();
+const { toastError, toastSuccess } = useAppToast();
 const supabase = useSupabaseClient();
 
 const deleteTransaction = async () => {
@@ -62,18 +62,14 @@ const deleteTransaction = async () => {
       .from("transactions")
       .delete()
       .eq("id", props.transaction.id);
-    toast.add({
-      title: "Transaction deleted",
-      icon: "i-heroicons-check-circle",
-    });
+
+    toastSuccess({ title: "Transaction deleted" });
 
     emit("deleted", props.transaction.id);
   } catch (error) {
-    toast.add({
-      title: "Error deleting transaction",
+    toastError({
+      title: "Transaction not deleted",
       description: error.message,
-      icon: "i-heroicons-exclamation-circle",
-      color: "red",
     });
   } finally {
     isLoading.value = false;
