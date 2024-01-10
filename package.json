@@ -1,7 +1,6 @@
 {
   "name": "nuxt-app",
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -11,13 +10,12 @@
     "seed": "node seed.mjs"
   },
   "devDependencies": {
-    "@faker-js/faker": "^8.3.1",
-    "@nuxthq/ui": "^2.7.0",
-    "@nuxtjs/supabase": "^1.1.5",
-    "date-fns": "^3.2.0",
-    "nuxt": "^3.9.0",
-    "vue": "^3.4.3",
-    "vue-router": "^4.2.5",
-    "zod": "^3.22.4"
+    "@faker-js/faker": "^8.1.0",
+    "@nuxt/devtools": "latest",
+    "@nuxt/ui": "^2.8.1",
+    "@nuxtjs/supabase": "^1.1.0",
+    "date-fns": "^2.30.0",
+    "nuxt": "^3.7.0",
+    "zod": "^3.22.2"
   }
 }
