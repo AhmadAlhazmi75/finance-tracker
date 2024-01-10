@@ -5,5 +5,8 @@ export const useCurrency = (amount) => {
       currency: "EUR",
     }).format(isRef(amount) ? amount.value : amount);
   });
-  return { currency };
+
+  return {
+    currency,
+  };
 };

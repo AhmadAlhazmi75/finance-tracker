@@ -1,47 +1,24 @@
 export const useFetchTransactions = (period) => {
+  const supabase = useSupabaseClient();
   const transactions = ref([]);
   const pending = ref(false);
-  const supabase = useSupabaseClient();
 
-  const income = computed(() => {
-    let sum = 0;
-    for (const transaction of transactions.value) {
-      if (transaction.type === "Income") {
-        sum += transaction.amount;
-      }
-    }
-    return sum;
-  });
+  const income = computed(() =>
+    transactions.value.filter((t) => t.type === "Income")
+  );
+  const expense = computed(() =>
+    transactions.value.filter((t) => t.type === "Expense")
+  );
 
-  const incomeCount = computed(() => {
-    let count = 0;
-    for (const transaction of transactions.value) {
-      if (transaction.type === "Income") {
-        count++;
-      }
-    }
-    return count;
-  });
+  const incomeCount = computed(() => income.value.length);
+  const expenseCount = computed(() => expense.value.length);
 
-  const expense = computed(() => {
-    let sum = 0;
-    for (const transaction of transactions.value) {
-      if (transaction.type === "Expense") {
-        sum += transaction.amount;
-      }
-    }
-    return sum;
-  });
-
-  const expenseCount = computed(() => {
-    let count = 0;
-    for (const transaction of transactions.value) {
-      if (transaction.type === "Expense") {
-        count++;
-      }
-    }
-    return count;
-  });
+  const incomeTotal = computed(() =>
+    income.value.reduce((sum, transaction) => sum + transaction.amount, 0)
+  );
+  const expenseTotal = computed(() =>
+    expense.value.reduce((sum, transaction) => sum + transaction.amount, 0)
+  );
 
   const fetchTransactions = async () => {
     pending.value = true;
@@ -55,34 +32,33 @@ export const useFetchTransactions = (period) => {
             .gte("created_at", period.value.from.toISOString())
             .lte("created_at", period.value.to.toISOString())
             .order("created_at", { ascending: false });
+
           if (error) return [];
+
           return data;
         }
       );
+
       return data.value;
     } finally {
       pending.value = false;
     }
   };
 
-  const refresh = async () => {
-    transactions.value = await fetchTransactions();
-  };
+  const refresh = async () => (transactions.value = await fetchTransactions());
 
-  watch(period, async () => {
-    await refresh();
-  });
+  watch(period, async () => await refresh());
 
   const transactionsGroupedByDate = computed(() => {
     let grouped = {};
 
     for (const transaction of transactions.value) {
-      const date = new Date(transaction.created_at).toISOString().split("T")[0];
-      //if at this date there is no transaction, an empty array will be created because there is no transactions at that date
+      const date = transaction.created_at.split("T")[0];
+
       if (!grouped[date]) {
         grouped[date] = [];
       }
-      //else take every transaction and push it to the array
+
       grouped[date].push(transaction);
     }
 
@@ -96,8 +72,10 @@ export const useFetchTransactions = (period) => {
         byDate: transactionsGroupedByDate,
       },
       income,
-      incomeCount,
       expense,
+      incomeTotal,
+      expenseTotal,
+      incomeCount,
       expenseCount,
     },
     refresh,

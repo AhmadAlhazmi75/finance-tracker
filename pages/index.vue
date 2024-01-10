@@ -12,15 +12,15 @@
     <Trend
       color="green"
       title="Income"
-      :amount="income"
-      :last-amount="previousIncome"
+      :amount="incomeTotal"
+      :last-amount="prevIncomeTotal"
       :loading="pending"
     />
     <Trend
       color="red"
       title="Expense"
-      :amount="expense"
-      :last-amount="previousExpense"
+      :amount="expenseTotal"
+      :last-amount="prevExpenseTotal"
       :loading="pending"
     />
     <Trend
@@ -48,29 +48,26 @@
       </div>
     </div>
     <div>
+      <TransactionModal v-model="isOpen" @saved="refresh()" />
       <UButton
         icon="i-heroicons-plus-circle"
         color="white"
         variant="solid"
         label="Add"
-        @click="isModalOpen = true"
+        @click="isOpen = true"
       />
-      <TransactionModal v-model="isModalOpen" @saved="refresh()" />
     </div>
   </section>
 
   <section v-if="!pending">
-    <div
-      v-for="(transactionsOnDay, date) in transactionsGroupedByDate"
-      :key="date"
-      class="mb-10"
-    >
+    <div v-for="(transactionsOnDay, date) in byDate" :key="date" class="mb-10">
       <DailyTransactionSummary :date="date" :transactions="transactionsOnDay" />
       <Transaction
         v-for="transaction in transactionsOnDay"
         :key="transaction.id"
         :transaction="transaction"
-        @deleted="refresh"
+        @deleted="refresh()"
+        @edited="refresh()"
       />
     </div>
   </section>
@@ -82,12 +79,11 @@
 <script setup>
 import { transactionViewOptions } from "~/constants";
 
-const isModalOpen = ref(false);
 const user = useSupabaseUser();
 const selectedView = ref(
   user.value.user_metadata?.transaction_view ?? transactionViewOptions[1]
 );
-
+const isOpen = ref(false);
 const { current, previous } = useSelectedTimePeriod(selectedView);
 
 const {
@@ -96,18 +92,19 @@ const {
   transactions: {
     incomeCount,
     expenseCount,
-    income,
-    expense,
-    grouped: { byDate: transactionsGroupedByDate },
+    incomeTotal,
+    expenseTotal,
+    grouped: { byDate },
   },
 } = useFetchTransactions(current);
-
 await refresh();
 
 const {
   refresh: refreshPrevious,
-  transactions: { income: previousIncome, expense: previousExpense },
+  transactions: {
+    incomeTotal: prevIncomeTotal,
+    expenseTotal: prevExpenseTotal,
+  },
 } = useFetchTransactions(previous);
-
-refreshPrevious();
+await refreshPrevious();
 </script>

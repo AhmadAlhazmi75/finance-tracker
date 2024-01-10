@@ -35,6 +35,7 @@
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const { url } = useAvatarUrl();
+
 const items = [
   [
     {

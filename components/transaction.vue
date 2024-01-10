@@ -7,8 +7,9 @@
         <UIcon :name="icon" :class="[iconColor]" />
         <div>{{ transaction.description }}</div>
       </div>
+
       <div>
-        <UBadge v-if="transaction.category" color="white">{{
+        <UBadge color="white" v-if="transaction.category">{{
           transaction.category
         }}</UBadge>
       </div>
@@ -24,6 +25,11 @@
             trailing-icon="i-heroicons-ellipsis-horizontal"
             :loading="isLoading"
           />
+          <TransactionModal
+            v-model="isOpen"
+            :transaction="transaction"
+            @saved="emit('edited')"
+          />
         </UDropdown>
       </div>
     </div>
@@ -34,42 +40,35 @@
 const props = defineProps({
   transaction: Object,
 });
-
-const emit = defineEmits(["deleted"]);
-
+const emit = defineEmits(["deleted", "edited"]);
 const isIncome = computed(() => props.transaction.type === "Income");
+const icon = computed(() =>
+  isIncome.value ? "i-heroicons-arrow-up-right" : "i-heroicons-arrow-down-left"
+);
+const iconColor = computed(() =>
+  isIncome.value ? "text-green-600" : "text-red-600"
+);
 
-const icon = computed(() => {
-  if (isIncome.value) {
-    return "i-heroicons-arrow-up-right";
-  }
-  return "i-heroicons-arrow-down-left";
-});
-
-const iconColor = computed(() => {
-  return isIncome.value ? "text-green-600" : "text-red-600";
-});
 const { currency } = useCurrency(props.transaction.amount);
 
 const isLoading = ref(false);
 const { toastError, toastSuccess } = useAppToast();
 const supabase = useSupabaseClient();
 
+const isOpen = ref(false);
+
 const deleteTransaction = async () => {
   isLoading.value = true;
+
   try {
-    const { error } = await supabase
-      .from("transactions")
-      .delete()
-      .eq("id", props.transaction.id);
-
-    toastSuccess({ title: "Transaction deleted" });
-
+    await supabase.from("transactions").delete().eq("id", props.transaction.id);
+    toastSuccess({
+      title: "Transaction deleted",
+    });
     emit("deleted", props.transaction.id);
   } catch (error) {
     toastError({
-      title: "Transaction not deleted",
-      description: error.message,
+      title: "Transaction was not deleted",
     });
   } finally {
     isLoading.value = false;
@@ -81,7 +80,7 @@ const items = [
     {
       label: "Edit",
       icon: "i-heroicons-pencil-square-20-solid",
-      click: () => console.log("Edit"),
+      click: () => (isOpen.value = true),
     },
     {
       label: "Delete",

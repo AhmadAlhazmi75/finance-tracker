@@ -1,6 +1,6 @@
 <template>
   <div
-    class="font-bold grid grid-cols-2 py-4 border-b border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-400"
+    class="grid grid-cols-2 py-4 border-b border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-400 font-bold"
   >
     <div class="flex items-center justify-between">
       {{ date }}
@@ -14,13 +14,13 @@
 
 <script setup>
 const props = defineProps({
-  transactions: Array,
   date: String,
+  transactions: Array,
 });
 
-// this is the sum of all transactions for the day
 const sum = computed(() => {
   let sum = 0;
+
   for (const transaction of props.transactions) {
     if (transaction.type === "Income") {
       sum += transaction.amount;
@@ -28,6 +28,7 @@ const sum = computed(() => {
       sum -= transaction.amount;
     }
   }
+
   return sum;
 });
 
