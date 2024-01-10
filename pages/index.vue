@@ -13,29 +13,29 @@
       color="green"
       title="Income"
       :amount="income"
-      :last-amount="3000"
-      :loading="isLoading"
+      :last-amount="previousIncome"
+      :loading="pending"
     />
     <Trend
       color="red"
       title="Expense"
       :amount="expense"
-      :last-amount="5000"
-      :loading="isLoading"
+      :last-amount="previousExpense"
+      :loading="pending"
     />
     <Trend
       color="green"
       title="Investments"
       :amount="4000"
       :last-amount="3000"
-      :loading="isLoading"
+      :loading="pending"
     />
     <Trend
       color="red"
       title="Saving"
       :amount="4000"
       :last-amount="4100"
-      :loading="isLoading"
+      :loading="pending"
     />
   </section>
 
@@ -55,13 +55,13 @@
         label="Add"
         @click="isModalOpen = true"
       />
-      <TransactionModal v-model="isModalOpen" @saved="refreshTransactions()" />
+      <TransactionModal v-model="isModalOpen" @saved="refresh()" />
     </div>
   </section>
 
-  <section v-if="!isLoading">
+  <section v-if="!pending">
     <div
-      v-for="(transactionsOnDay, date) in sortedTransactionsGroupedByDate"
+      v-for="(transactionsOnDay, date) in transactionsGroupedByDate"
       :key="date"
       class="mb-10"
     >
@@ -70,7 +70,7 @@
         v-for="transaction in transactionsOnDay"
         :key="transaction.id"
         :transaction="transaction"
-        @deleted="refreshTransactions()"
+        @deleted="refresh"
       />
     </div>
   </section>
@@ -84,97 +84,27 @@ import { transactionViewOptions } from "~/constants";
 
 const isModalOpen = ref(false);
 const selectedView = ref(transactionViewOptions[1]);
-const transactions = ref([]);
-const supabase = useSupabaseClient();
-const isLoading = ref(false);
 
-const income = computed(() => {
-  let sum = 0;
-  for (const transaction of transactions.value) {
-    if (transaction.type === "Income") {
-      sum += transaction.amount;
-    }
-  }
-  return sum;
-});
+const { current, previous } = useSelectedTimePeriod(selectedView);
 
-const incomeCount = computed(() => {
-  let count = 0;
-  for (const transaction of transactions.value) {
-    if (transaction.type === "Income") {
-      count++;
-    }
-  }
-  return count;
-});
+const {
+  pending,
+  refresh,
+  transactions: {
+    incomeCount,
+    expenseCount,
+    income,
+    expense,
+    grouped: { byDate: transactionsGroupedByDate },
+  },
+} = useFetchTransactions(current);
 
-const expense = computed(() => {
-  let sum = 0;
-  for (const transaction of transactions.value) {
-    if (transaction.type === "Expense") {
-      sum += transaction.amount;
-    }
-  }
-  return sum;
-});
+await refresh();
 
-const expenseCount = computed(() => {
-  let count = 0;
-  for (const transaction of transactions.value) {
-    if (transaction.type === "Expense") {
-      count++;
-    }
-  }
-  return count;
-});
+const {
+  refresh: refreshPrevious,
+  transactions: { income: previousIncome, expense: previousExpense },
+} = useFetchTransactions(previous);
 
-const fetchTransactions = async () => {
-  isLoading.value = true;
-  try {
-    const { data } = await useAsyncData("transactions", async () => {
-      const { data, error } = await supabase.from("transactions").select("*");
-      if (error) return [];
-      return data;
-    });
-    return data.value;
-  } finally {
-    isLoading.value = false;
-  }
-};
-
-const refreshTransactions = async () => {
-  transactions.value = await fetchTransactions();
-};
-
-await refreshTransactions();
-
-// transactions.value = await fetchTransactions();
-
-const transactionsGroupedByDate = computed(() => {
-  let grouped = {};
-
-  for (const transaction of transactions.value) {
-    const date = new Date(transaction.created_at).toISOString().split("T")[0];
-    //if at this date there is no transaction, an empty array will be created because there is no transactions at that date
-    if (!grouped[date]) {
-      grouped[date] = [];
-    }
-    //else take every transaction and push it to the array
-    grouped[date].push(transaction);
-  }
-
-  return grouped;
-});
-
-// Sorting transactionsGroupedByDate by date
-const sortedTransactionsGroupedByDate = computed(() => {
-  const sorted = {};
-  const keys = Object.keys(transactionsGroupedByDate.value).sort((a, b) => {
-    return new Date(b) - new Date(a);
-  });
-  for (const key of keys) {
-    sorted[key] = transactionsGroupedByDate.value[key];
-  }
-  return sorted;
-});
+refreshPrevious();
 </script>
