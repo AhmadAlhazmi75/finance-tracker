@@ -14,6 +14,12 @@
 </template>
 
 <script setup>
+useHead({
+  title: 'Profile Settings',
+  meta: [
+    { name: 'Profile Settings tab', content: 'Here the can change his profile.' }
+  ],})
+
 import { z } from 'zod'
 
 const supabase = useSupabaseClient()

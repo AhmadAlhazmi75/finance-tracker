@@ -9,6 +9,12 @@
 </template>
 
 <script setup>
+useHead({
+  title: 'Preferences Settings',
+  meta: [
+    { name: 'Preferences Settings tab', content: 'Here the can change his preferences.' }
+  ],})
+
 import { z } from 'zod'
 import { transactionViewOptions } from '~/constants'
 

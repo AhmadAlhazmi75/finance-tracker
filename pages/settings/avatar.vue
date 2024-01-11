@@ -19,6 +19,12 @@
 </template>
 
 <script setup>
+useHead({
+  title: 'Avatar Settings',
+  meta: [
+    { name: 'Avatar Settings tab', content: 'Here the can change his avatar.' }
+  ],})
+  
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
 // We need to get the actual avatar URL

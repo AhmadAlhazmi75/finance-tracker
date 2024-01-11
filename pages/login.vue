@@ -28,6 +28,11 @@
 </template>
 
 <script setup>
+useHead({
+  title: 'Login',
+  meta: [
+    { name: 'Login page', content: 'Here the user authenticated.' }
+  ],})
 const success = ref(false)
 const email = ref('')
 const pending = ref(false)
