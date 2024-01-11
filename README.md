@@ -1,63 +1,96 @@
-# Nuxt 3 Minimal Starter
+# 📊 Financial Tracker
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Financial Tracker is a web-based application 🌐 built with Nuxt.js and Vue.js that allows users to track their financial transactions 💰. It provides features such as logging in, viewing transactions, and performing various actions related to personal finances.
 
-## Setup
+## Features 🌟
 
-Make sure to install the dependencies:
+- 🔐 User authentication
+- 📝 View and list financial transactions
+- ➕ Add, edit, and delete transactions
+- 🏷️ Categorize transactions
+- 📊 Visualize financial trends
+
+## Technologies 🛠️
+
+- 🟢 Nuxt.js: A framework for building Vue.js applications.
+- 🟡 Vue.js: The Progressive JavaScript Framework for building user interfaces.
+- 🟠 JavaScript: The programming language used to build the application.
+- 🤖 Faker.js: A library for generating fake data.
+- 🔥 Supabase: An open-source Firebase alternative providing database and authentication.
+- 📅 Date-fns: A library for manipulating and formatting dates.
+
+## Project Structure 📁
+
+- 🧩 `components`: Reusable Vue components such as headers, modals, and visualizations.
+- ⚙️ `composables`: Reusable logic and functions for toasts, avatars, and currency formatting.
+- 🖼️ `layouts`: Layout files for different pages, with a default layout for most pages.
+- 📄 `pages`: The actual pages of the application, including login, settings, and the dashboard.
+- 🌐 `public`: Static assets like the favicon.
+- 🖥️ `server`: Server-side configuration files.
+
+## Setup 🚀
+
+To get started with the Financial Tracker, follow these steps:
+
+1. Clone the repository to your local machine.
+2. Install the dependencies using your preferred package manager (`npm`, `pnpm`, or `yarn`):
 
 ```bash
-# npm
 npm install
-
-# pnpm
+# or
 pnpm install
-
-# yarn
+# or
 yarn install
 ```
 
-## Development Server
+3. Start the development server:
 
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
 npm run dev
 
-# pnpm
+# or
+
 pnpm run dev
 
-# yarn
+# or
+
 yarn dev
-```
 
-## Production
+4. To build the application for production, run:
 
-Build the application for production:
-
-```bash
-# npm
 npm run build
 
-# pnpm
+# or
+
 pnpm run build
 
-# yarn
+# or
+
 yarn build
-```
 
-Locally preview production build:
+5. You can also generate a static version of the application:
 
-```bash
-# npm
-npm run preview
+npm run generate
 
-# pnpm
-pnpm run preview
+# or
 
-# yarn
-yarn preview
-```
+pnpm run generate
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+# or
+
+yarn generate
+
+6. Preview the production build locally:
+
+npm run start
+
+# or
+
+pnpm run start
+
+# or
+
+yarn start
+
+## Contributing 🤝
+
+Contributions are welcome! Please feel free to submit a pull request or create an issue if you have any suggestions or find any bugs.
