@@ -44,7 +44,7 @@ yarn install
 ```
 
 3. Start the development server:
-
+```bash
 npm run dev
 
 # or
@@ -54,9 +54,9 @@ pnpm run dev
 # or
 
 yarn dev
-
+```
 4. To build the application for production, run:
-
+```bash
 npm run build
 
 # or
@@ -66,9 +66,9 @@ pnpm run build
 # or
 
 yarn build
-
+```
 5. You can also generate a static version of the application:
-
+```bash
 npm run generate
 
 # or
@@ -78,9 +78,9 @@ pnpm run generate
 # or
 
 yarn generate
-
+```
 6. Preview the production build locally:
-
+```bash
 npm run start
 
 # or
@@ -90,7 +90,7 @@ pnpm run start
 # or
 
 yarn start
-
+```
 ## Contributing 🤝
 
 Contributions are welcome! Please feel free to submit a pull request or create an issue if you have any suggestions or find any bugs.
